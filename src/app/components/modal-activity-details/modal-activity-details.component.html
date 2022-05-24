@@ -1,0 +1,85 @@
+<ngx-smart-modal #activityDetails identifier="activityDetails">
+  <div *ngIf="hasData">
+    <div>
+      <h6 class="card-subtitle line-on-side text-muted text-xs-center font-small-3 pt-2 mb-2">
+        <span>Infos principales</span>
+      </h6>
+      <div class="row">
+        <div class="col-md-12">
+          <span class="details-info">Activité :</span>
+          <span>{{printActivity()}}</span>
+        </div>
+        <div class="col-md-12">
+          <span class="details-info">Jour: </span>
+          <span>{{datas?.displayDay}}</span>
+        </div>
+        <div class="col-md-12">
+          <span class="details-info">Période :</span>
+          <span>{{printPeriod(activity?.period)}}</span>
+        </div>
+        <div class="col-md-12">
+          <span class="details-info">Lieu (Salle) :</span>
+          <span>{{roomCode}}</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h6 class="card-subtitle line-on-side text-muted text-xs-center font-small-3 pt-2 mb-2">
+        <span>Activité</span>
+      </h6>
+      <div class="row">
+        <div class="col-md-12">
+          <span class="details-info">code :</span>
+          <span>{{activity?.name}}</span>
+        </div>
+        <div class="col-md-12">
+          <span class="details-info">Description: </span>
+          <span>{{printDescription()}}</span>
+        </div>
+        <div class="col-md-12" *ngIf="isDrifted()">
+          <span class="details-info">Dérive de :</span>
+          <span>{{this.activity.driftFrom.code}}</span>
+        </div>
+        <div class="col-md-12">
+          <span class="details-info">Intitulé :</span>
+          <span>{{entitled}}</span>
+        </div>
+        <div class="col-md-12">
+          <span class="details-info">Participation :</span>
+          <span>{{participation}}</span>
+        </div>
+        <div class="col-md-12" *ngIf="!activity?.participation?.allStudentsParticipate">
+          <span class="details-info">Constitution du groupe :</span>
+          <span>{{groupConstitution}}</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h6 class="card-subtitle line-on-side text-muted text-xs-center font-small-3 pt-2 mb-2">
+        <span>Enseignants</span>
+      </h6>
+      <div class="row">
+        <div class="col-md-12">
+          <span class="details-info">Enseignant principal :</span>
+          <span>{{activity?.principalTeacher?.noms}}</span>
+        </div>
+        <div class="col-md-12">
+          <span class="details-info">Bureau: </span>
+          <span>{{getTeacherOffice(activity?.principalTeacher?.bureau)}}</span>
+        </div>
+        <div class="col-md-12">
+          <span class="details-info">Téléphone :</span>
+          <span>{{activity?.principalTeacher?.telephone}}</span>
+        </div>
+        <div class="col-md-12">
+          <span class="details-info">Email :</span>
+          <span>{{activity?.principalTeacher?.email}}</span>
+        </div>
+        <div class="col-md-12">
+          <span class="details-info">Autres enseignants :</span>
+          <span>{{othersTeachers}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</ngx-smart-modal>
