@@ -121,7 +121,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   printActivity(activity: Activity)
   {
-    let result = activity.name;
+    let result = (activity.participation.isOptional ? "*" : "")+activity.name;
     if(!activity.participation.allStudentsParticipate)
     {
       result += ", "+activity.participation.groupeName;

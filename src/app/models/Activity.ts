@@ -9,6 +9,7 @@ export interface Activity {
   id: number,
   name: string,
   participation: {
+    isOptional: boolean
     allStudentsParticipate: boolean,
     groupeName: string,
     groupIsDivideByAlphabet: boolean,

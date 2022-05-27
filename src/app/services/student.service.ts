@@ -217,37 +217,49 @@ export class StudentService {
 
         let room: Salle | undefined = this.rooms.find(temp => temp.id === elt.salleId);
 
-        let courseGroup: GroupeCours | undefined = this.coursesGroupsOfStudentClass.find(temp => temp.id === elt.groupeCoursId);
+        let courseGroup: GroupeCours | undefined = this.coursesGroups.find(temp => temp.id === elt.groupeCoursId);
         let tutorialGroup: GroupeTd | undefined = this.tutorialsGroups.find(temp => temp.id === elt.groupeTdId);
 
+        let isStudentCourseGroup =  courseGroup ? this.studentNameIsInInterval(courseGroup.lettre_debut, courseGroup.lettre_fin) : true;
+
         let group: any = courseGroup ? courseGroup : tutorialGroup ? tutorialGroup : null;
-        result.push({
-          id: result.length + 1,
-          name: ""+activityName,
-          participation: {
-            allStudentsParticipate: group === null,
-            groupIsDivideByAlphabet: typeof group?.lettre_debut !== "undefined",
-            groupeName: group?.nom,
-            beginningLetter: group?.lettre_debut ? group.lettre_debut : "",
-            endingLetter: group?.lettre_fin ? group.lettre_fin : "",
-          },
-          day: "",
-          description: {
-            isCourse: elt.ueId !== null,
-            isTutorial: elt.tdId !== null,
-          },
-          entitled: teachingUnit?.intitule,
-          entitled_en: teachingUnit?.intitule_en,
-          driftFrom: driftFrom,
-          othersInvolvedTeachers: othersTeachers,
-          period: period,
-          principalTeacher: principalTeacher ? principalTeacher : null,
-          room: room ? room : null
-        })
+        if(isStudentCourseGroup)
+        {
+          result.push({
+            id: result.length + 1,
+            name: ""+activityName,
+            participation: {
+              isOptional: teachingUnit ? teachingUnit?.est_optionnelle : driftFrom ? driftFrom?.est_optionnelle : false,
+              allStudentsParticipate: group === null,
+              groupIsDivideByAlphabet: typeof group?.lettre_debut !== "undefined",
+              groupeName: group?.nom,
+              beginningLetter: group?.lettre_debut ? group.lettre_debut : "",
+              endingLetter: group?.lettre_fin ? group.lettre_fin : "",
+            },
+            day: "",
+            description: {
+              isCourse: elt.ueId !== null,
+              isTutorial: elt.tdId !== null,
+            },
+            entitled: teachingUnit?.intitule,
+            entitled_en: teachingUnit?.intitule_en,
+            driftFrom: driftFrom,
+            othersInvolvedTeachers: othersTeachers,
+            period: period,
+            principalTeacher: principalTeacher ? principalTeacher : null,
+            room: room ? room : null
+          });
+        }
       }
     })
 
     return result;
+  }
+
+  private studentNameIsInInterval(startingLetter: string, endingLetter: string)
+  {
+    let char: string = this.student? this.student.noms.charAt(0) : "";
+    return char.localeCompare(startingLetter) >= 0 && char.localeCompare(endingLetter) <= 0;
   }
 
   get currentDayCoursesPlanning()

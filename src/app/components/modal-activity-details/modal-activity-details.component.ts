@@ -43,7 +43,7 @@ export class ModalActivityDetailsComponent implements OnInit, AfterViewInit {
 
   printActivity()
   {
-    let result = this.activity?.name;
+    let result = (this.activity?.participation?.isOptional ? "*" : "")+this.activity?.name;
     if(!this.activity?.participation?.allStudentsParticipate)
     {
       result += ", "+this.activity?.participation?.groupeName;
@@ -52,15 +52,23 @@ export class ModalActivityDetailsComponent implements OnInit, AfterViewInit {
     return result;
   }
 
-  getTeacherOffice(office: string)
+  get teacherOffice()
   {
-    if(office !== null && office !== "")
+    if(this.activity?.principalTeacher)
     {
-      return office;
+      let office = this.activity.principalTeacher.bureau;
+      if(office !== null && office !== "")
+      {
+        return office;
+      }
+      else{
+        return this.translationService.getValueOf("MODALACTIVITY.UNKNOWN1");
+      }
     }
     else{
-      return "Inconnu";
+      return "-";
     }
+
   }
 
   printPeriod(period: any)
@@ -70,28 +78,33 @@ export class ModalActivityDetailsComponent implements OnInit, AfterViewInit {
     if(period)
       return this.translationService.getCurrentLang() === "fr" ?( "De " + period[startField] + " À " + period[endField]) : ("From "+ period[startField+"_en"] + " To " + period[endField+"_en"]);
     else
-      return "Inconnue";
+      return this.translationService.getValueOf("MODALACTIVITY.UNKNOWN2");
   }
 
-  printDescription()
+  get description()
   {
     let description = this.activity?.description;
     let name = this.activity?.name;
     let result = "";
     if(description.isCourse){
-      result = "Cours magistral de " + name;
+      result = this.translationService.getValueOf("MODALACTIVITY.ACTIVITY.COURSE")+" " + name;
     }
     else if(description.isTutorial)
     {
-      result = "Travaux dirigés de " + this.activity?.driftFrom.code;
+      result = this.translationService.getValueOf("MODALACTIVITY.ACTIVITY.TUTORIAL")+" " + this.activity?.driftFrom.code;
     }
 
     if(!this.activity.participation.allStudentsParticipate)
     {
-      result += (result !== "" ? " avec le " + this.activity.participation.groupeName : "-");
+      result += (result !== "" ? (this.translationService.getValueOf("MODALACTIVITY.ACTIVITY.WITH")+" ") + this.activity.participation.groupeName : "-");
     }
 
     return result;
+  }
+
+  get optionality()
+  {
+    return this.activity?.participation?.isOptional ? "CHOICES.YES" : "CHOICES.NO";
   }
 
   isDrifted()
@@ -113,7 +126,7 @@ export class ModalActivityDetailsComponent implements OnInit, AfterViewInit {
 
   get participation()
   {
-    return this.activity.participation.allStudentsParticipate ? "Toute la classe" : this.activity.participation.groupeName;
+    return this.activity.participation.allStudentsParticipate ? this.translationService.getValueOf("MODALACTIVITY.ACTIVITY.ALLTHECLASS") : this.activity.participation.groupeName;
   }
 
   get groupConstitution()
@@ -125,10 +138,10 @@ export class ModalActivityDetailsComponent implements OnInit, AfterViewInit {
     else{
       if(this.activity.participation.beginningLetter)
       {
-        return "Etudiants allant de " + this.activity.participation.beginningLetter + " à " + this.activity.participation.endingLetter;
+        return this.translationService.getValueOf("MODALACTIVITY.ACTIVITY.STUDENTSFROM")+" " + this.activity.participation.beginningLetter +" "+ this.translationService.getValueOf("MODALACTIVITY.ACTIVITY.TO")+" " + this.activity.participation.endingLetter;
       }
       else{
-        return "Diversifiée"
+        return this.translationService.getValueOf("MODALACTIVITY.ACTIVITY.DIVERSIFIED");
       }
     }
   }
@@ -140,7 +153,7 @@ export class ModalActivityDetailsComponent implements OnInit, AfterViewInit {
       return this.activity.room.code;
     }
     else{
-      return "Non renseignée";
+      return this.translationService.getValueOf("MODALACTIVITY.INFOS.ROOMNOTSPECIFIED");
     }
   }
 
@@ -161,7 +174,7 @@ export class ModalActivityDetailsComponent implements OnInit, AfterViewInit {
       return result;
     }
     else{
-      return "Aucun";
+      return this.translationService.getValueOf("MODALACTIVITY.TEACHERS.NONE");
     }
   }
 
